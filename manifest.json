@@ -1,12 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Element Color Picker and Filters",
-  "version": "1.1",
-  "description": "Click on an element to get its color and apply SVG filters.",
+  "name": "CVD simulator plus",
+  "version": "1.0",
+  "description": "This extension simulates color vision deficiency using a SVG filer based on the CVD simulation algorithm. This feature was implemented based on the code from SVG filters in libDaltonLens https://github.com/DaltonLens/libDaltonLens",
   "permissions": ["activeTab", "scripting", "storage"],
-  "background": {
-    "service_worker": "background.js"
-  },
   "action": {
     "default_popup": "popup.html"
   },
