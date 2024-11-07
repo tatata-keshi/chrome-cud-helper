@@ -130,17 +130,66 @@ function showOverlayInContentScript() {
     svgFilters.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
       <!-- Protanopia Filter -->
-      <filter id="protanopia">
-        <feColorMatrix type="matrix" values="0.567,0.433,0,0,0,0.558,0.442,0,0,0,0,0.242,0.758,0,0,0,0,0,1,0"/>
+      <filter id="protanopia" color-interpolation-filters="linearRGB">
+        <feColorMatrix type="matrix" in="SourceGraphic" values="
+            0.10889,0.89111,-0.00000,0,0
+            0.10889,0.89111,0.00000,0,0
+            0.00447,-0.00447,1.00000,0,0
+            0,0,0,1,0"
+        />
       </filter>
       <!-- Deuteranopia Filter -->
-      <filter id="deuteranopia">
-        <feColorMatrix type="matrix" values="0.625,0.375,0,0,0,0.7,0.3,0,0,0,0,0.3,0.7,0,0,0,0,0,1,0"/>
+      <filter id="deuteranopia" color-interpolation-filters="linearRGB">
+        <feColorMatrix type="matrix" in="SourceGraphic" values="
+            0.29031,0.70969,-0.00000,0,0
+            0.29031,0.70969,-0.00000,0,0
+            -0.02197,0.02197,1.00000,0,0
+            0,0,0,1,0"
+        />
       </filter>
       <!-- Tritanopia Filter -->
-      <filter id="tritanopia">
-        <feColorMatrix type="matrix" values="0.95,0.05,0,0,0,0,0.433,0.567,0,0,0,0.475,0.525,0,0,0,0,0,1,0"/>
-      </filter>
+      <filter id="tritanopia" color-interpolation-filters="linearRGB">
+        <!-- 
+            Projection 1, with a special alpha that encodes the separation plane.
+            If dot(rgb, n) > 0, then use projection 1, otherwise use projection 2.
+            This is encoded in alpha by:
+                - Applying a 1.0 factor on the source alpha so that 0 input alpha remains 0
+                - Subtracting 0.2 so that negative values become < 0.8 and position values >= 0.8
+                - It is important to normalize the factors to keep a good numerical accuracy
+                  and to keep a large alpha threshold since the RGB values are then stored
+                  premultiplied by alpha.
+                - This assumes that negative values get clipped to 0, and positive
+                  values clipped to 1, without overflowing, etc. Which seems to be the case
+                  on all browsers.
+          -->
+        <feColorMatrix type="matrix" in="SourceGraphic" result="ProjectionOnPlane1" values="
+            1.01354, 0.14268, -0.15622, 0, 0
+            -0.01181, 0.87561, 0.13619, 0, 0
+            0.07707, 0.81208, 0.11085, 0, 0
+            7.92482, -5.66475, -2.26007, 1, -0.2"
+        />
+        <!-- 
+            Binarize alpha. 5 values means the last chunk will start at 0.8.
+            All the values below 0.8 will become 0 (correspond to the dot
+            product with the separation plane being negative) and above will become 1
+        -->        
+        <feComponentTransfer in="ProjectionOnPlane1" result="ProjectionOnPlane1">
+            <feFuncA type="discrete" tableValues="0 0 0 0 1"/>
+        </feComponentTransfer>
+
+        <feColorMatrix type="matrix" in="SourceGraphic" result="ProjectionOnPlane2" values="
+            0.93337, 0.19999, -0.13336, 0, 0
+            0.05809, 0.82565, 0.11626, 0, 0
+            -0.37923, 1.13825, 0.24098, 0, 0
+            0,0,0,1,0"
+        />
+
+        <!-- Uncomment the debug black matrix to see which pixels go to which plane -->
+        <!-- <feColorMatrix type="matrix" in="SourceGraphic" result="ProjectionOnPlane2" values="0,0,0,0,0 0,0,0,0,0 0,0,0,0,0 0,0,0,1,0"/> -->
+
+        <!-- Blend the two projections, picking one or the other depending on alpha. -->
+        <feBlend in="ProjectionOnPlane1" in2="ProjectionOnPlane2" mode="normal"/>
+    </filter>
     </svg>
   `;
     document.body.appendChild(svgFilters);
