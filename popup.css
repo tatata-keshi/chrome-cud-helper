@@ -1,0 +1,10 @@
+body {
+    width: 240px;
+}
+
+.popup-container {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

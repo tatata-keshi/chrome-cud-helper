@@ -4,8 +4,30 @@
     <meta charset="UTF-8">
     <title>Overlay Extension</title>
     <script src="popup.js" defer></script>
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-<button id="showOverlay">Show Overlay</button>
+<div class="popup-container">
+    <fieldset>
+        <legend>適用するフィルターを選択</legend>
+        <div>
+            <input type="radio" id="none" name="filter" value="none" />
+            <label for="none">未選択</label>
+        </div>
+        <div>
+            <input type="radio" id="filter-protanopia" name="filter" value="protanopia" />
+            <label for="filter-protanopia">Protanopia（1型2色覚）</label>
+        </div>
+        <div>
+            <input type="radio" id="filter-deuteranopia" name="filter" value="deuteranopia" />
+            <label for="filter-deuteranopia">Deuteranopia（2型2色覚）</label>
+        </div>
+        <div>
+            <input type="radio" id="filter-tritanopia" name="filter" value="tritanopia" />
+            <label for="filter-tritanopia">Tritanopia（3型2色覚）</label>
+        </div>
+    </fieldset>
+    <button id="showOverlay">メニューを開く</button>
+</div>
 </body>
 </html>
