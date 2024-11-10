@@ -59,19 +59,18 @@ document.getElementById("showOverlay").addEventListener("click", () => {
             function: showOverlayInContentScript
         });
 
-        // ポップアップを閉じる
         window.close();
     });
 });
 
 function showOverlayInContentScript() {
-    if (document.getElementById("customOverlay")) return; // 重複表示防止
+    if (document.getElementById("customOverlay")) return;
 
     const overlay = document.createElement("div");
     overlay.id = "cvdCustomOverlay";
     overlay.innerHTML = `
     <div class="cvd-exit-overlay-button-container">
-        <button class="cvd-exit-overlay-button">Exit</button>        
+        <button id="exitOverlayButton" class="cvd-exit-overlay-button">Exit</button>        
     </div>
     <div class="cvd-color-display-container">
         <h2>Color1</h2>
@@ -162,12 +161,11 @@ function showOverlayInContentScript() {
         </div>
     </div>
     <div class="cvd-toggle-color-pick-mode-button-container">
-        <button class="cvd-toggle-color-pick-mode-button" id="colorPickerMode">Pick Element Color</button>
+        <button class="cvd-toggle-color-pick-mode-button" id="toggleColorPickMode">選択モード</button>
     </div>
   `;
     document.documentElement.appendChild(overlay);
 
-    // スタイルをインジェクト
     const style = document.createElement("style");
     style.textContent = `
     #cvdCustomOverlay {
@@ -175,13 +173,12 @@ function showOverlayInContentScript() {
         top: 0;
         right: 0;
         width: 320px;
-        height: 440px;
         background-color: white;
         color: black;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 8px 12px;
+        padding: 12px 16px;
         z-index: 10000;
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -250,22 +247,33 @@ function showOverlayInContentScript() {
         padding: 4px 8px;
         cursor: pointer;
     }
+    .cvd-toggle-color-pick-mode-button:hover {
+        background-color: darkblue;
+    }
+    .cvd-toggle-color-pick-mode-button:focus {
+        background-color: lightblue;
+    }
+    .cvd-toggle-color-pick-mode-button:active {
+        background-color: lightblue;
+    }
   `;
     document.head.appendChild(style);
 
-    // 色の初期値を保持するオブジェクト
-    const selectedColors = [
+    let selectedColors = [
         { r: 128, g: 128, b: 128 },
         { r: 128, g: 128, b: 128 }
     ];
 
-    const selectedBackgrounds = [
+    let selectedBackgrounds = [
         { r: 128, g: 128, b: 128 },
         { r: 128, g: 128, b: 128 }
     ]
 
+    let boxIndex = 0;
+
     function updateColorFromSliders(index) {
         const color = selectedColors[index];
+        console.log(color);
         document.getElementById(`boxColor${index + 1}`).style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
         document.getElementById(`boxColorFiltered${index + 1}`).style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
     }
@@ -289,26 +297,35 @@ function showOverlayInContentScript() {
         }
     });
 
-    // 要素の色を取得するモード
-    document.getElementById("colorPickerMode").addEventListener("click", () => {
+    document.getElementById("toggleColorPickMode").addEventListener("click", () => {
         document.body.style.cursor = "crosshair";
 
         function colorPickerHandler(event) {
             event.preventDefault();
+
             const targetElement = event.target;
             const computedStyle = window.getComputedStyle(targetElement);
 
             const bgColor = computedStyle.backgroundColor;
-            const [_, r, g, b] = bgColor.match(/rgba?\((\d+), (\d+), (\d+)/).map(Number);
+            const color = computedStyle.color;
+            const [_, backgroundR, backgroundG, backgroundB] = bgColor.match(/rgba?\((\d+), (\d+), (\d+)/).map(Number);
+            const [__, colorR, colorG, colorB] = color.match(/rgba?\((\d+), (\d+), (\d+)/).map(Number);
 
-            // 2つ目まで保存し、順に更新
-            const index = selectedColors[0].r === 128 ? 0 : selectedColors[1].r === 128 ? 1 : 0;
-            selectedColors[index] = { r, g, b };
-            document.getElementById(`sliderR${index + 1}`).value = r;
-            document.getElementById(`sliderG${index + 1}`).value = g;
-            document.getElementById(`sliderB${index + 1}`).value = b;
+            selectedBackgrounds[boxIndex] = { r: backgroundR, g: backgroundG, b: backgroundB };
+            selectedColors[boxIndex] = { r: colorR, g: colorG, b: colorB };
 
-            updateColorFromSliders(index);
+            document.getElementById(`sliderBackgroundR${boxIndex + 1}`).value = backgroundR;
+            document.getElementById(`sliderBackgroundG${boxIndex + 1}`).value = backgroundG;
+            document.getElementById(`sliderBackgroundB${boxIndex + 1}`).value = backgroundB;
+            document.getElementById(`sliderColorR${boxIndex + 1}`).value = colorR;
+            document.getElementById(`sliderColorG${boxIndex + 1}`).value = colorG;
+            document.getElementById(`sliderColorB${boxIndex + 1}`).value = colorB;
+
+            updateBackgroundFromSliders(boxIndex);
+            updateColorFromSliders(boxIndex);
+
+            boxIndex = (boxIndex + 1) % 2;
+
             document.body.style.cursor = "default";
             document.removeEventListener("click", colorPickerHandler, true);
         }
@@ -316,10 +333,9 @@ function showOverlayInContentScript() {
         document.addEventListener("click", colorPickerHandler, true);
     });
 
-    // Exitボタンでオーバーレイを消去
-    document.getElementById("exitOverlay").addEventListener("click", (e) => {
-        e.stopPropagation(); // イベントが伝播して消えないようにする
+    document.getElementById("exitOverlayButton").addEventListener("click", (e) => {
+        e.stopPropagation();
         overlay.remove();
-        style.remove();  // スタイルも削除
+        style.remove();
     });
 }
