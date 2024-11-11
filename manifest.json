@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Chrome CUD Helper",
   "version": "1.0.1",
-  "description": "開発者向けCUDチェックツール。This feature was implemented based on the code from SVG filters in libDaltonLens.",
+  "description": "開発者向けCUDチェックツール。",
   "permissions": ["activeTab", "scripting", "storage"],
   "action": {
     "default_popup": "popup.html"
