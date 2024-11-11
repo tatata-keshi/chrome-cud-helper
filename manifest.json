@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Chrome CUD Helper",
-  "version": "1.0.0",
-  "description": "This extension simulates color vision deficiency using a SVG filer based on the CVD simulation algorithm. This feature was implemented based on the code from SVG filters in libDaltonLens.",
+  "version": "1.0.2",
+  "description": "開発者向けCUDチェックツール。This feature was implemented based on the code from SVG filters in libDaltonLens.",
   "permissions": ["activeTab", "scripting", "storage"],
   "action": {
     "default_popup": "popup.html"
