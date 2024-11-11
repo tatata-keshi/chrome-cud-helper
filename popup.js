@@ -69,6 +69,10 @@ function showOverlayInContentScript() {
     const overlay = document.createElement("div");
     overlay.id = "cvdCustomOverlay";
     overlay.innerHTML = `
+    <div class="cvd-set-overlay-position-container">
+        <button type="button" class="cvd-set-overlay-position" id="setTopLeft">&nwarr;</button>
+        <button type="button" class="cvd-set-overlay-position" id="setTopRight">&nearr;</button>
+    </div>
     <div class="cvd-exit-overlay-button-container">
         <button id="exitOverlayButton" class="cvd-exit-overlay-button">Exit</button>        
     </div>
@@ -163,15 +167,27 @@ function showOverlayInContentScript() {
     <div class="cvd-toggle-color-pick-mode-button-container">
         <button class="cvd-toggle-color-pick-mode-button" id="toggleColorPickMode">選択モード</button>
     </div>
+        <div class="cvd-set-overlay-position-container">
+        <button type="button" class="cvd-set-overlay-position" id="setBottomLeft">&swarr;</button>
+        <button type="button" class="cvd-set-overlay-position" id="setBottomRight">&searr;</button>
+    </div>
   `;
+
+    function setOverlayPosition(position) {
+        overlay.style.top = position.includes("Top") ? "0" : "";
+        overlay.style.bottom = position.includes("Bottom") ? "0" : "";
+        overlay.style.left = position.includes("Left") ? "0" : "";
+        overlay.style.right = position.includes("Right") ? "0" : "";
+    }
+
+    setOverlayPosition("TopRight");
+
     document.documentElement.appendChild(overlay);
 
     const style = document.createElement("style");
     style.textContent = `
     #cvdCustomOverlay {
         position: fixed;
-        top: 0;
-        right: 0;
         width: 320px;
         background-color: white;
         color: black;
@@ -182,6 +198,20 @@ function showOverlayInContentScript() {
         z-index: 10000;
         border: 1px solid #ccc;
         border-radius: 4px;
+        box-shadow: 0px 0px 12px -4px #777777;
+    }
+    .cvd-set-overlay-position-container {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .cvd-set-overlay-position {
+        background-color: #ccc;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        padding: 4px 8px;
+        cursor: pointer;   
     }
     #cvdCustomOverlay h2 {
         font-size: 16px;
@@ -191,6 +221,7 @@ function showOverlayInContentScript() {
         width: 100%;
         display: flex;
         justify-content: flex-end;
+        margin-top: 16px;
     }
     .cvd-exit-overlay-button {
         background-color: red;
@@ -231,10 +262,11 @@ function showOverlayInContentScript() {
     .cvd-color-slider {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 8px;
     }
     .cvd-toggle-color-pick-mode-button-container {
         margin-top: 16px;
+        margin-bottom: 16px;
         width: 100%;
         display: flex;
         justify-content: center;
@@ -259,6 +291,19 @@ function showOverlayInContentScript() {
   `;
     document.head.appendChild(style);
 
+    document.getElementById("setTopLeft").addEventListener("click", () => {
+        setOverlayPosition("TopLeft");
+    });
+    document.getElementById("setTopRight").addEventListener("click", () => {
+        setOverlayPosition("TopRight");
+    });
+    document.getElementById("setBottomLeft").addEventListener("click", () => {
+        setOverlayPosition("BottomLeft");
+    });
+    document.getElementById("setBottomRight").addEventListener("click", () => {
+        setOverlayPosition("BottomRight");
+    });
+
     let selectedColors = [
         { r: 128, g: 128, b: 128 },
         { r: 128, g: 128, b: 128 }
@@ -271,17 +316,30 @@ function showOverlayInContentScript() {
 
     let boxIndex = 0;
 
+    setSliderValue(0);
+    setSliderValue(1);
+
+    function setSliderValue(index) {
+        document.getElementById(`sliderColorR${index + 1}Value`).textContent = selectedColors[index].r;
+        document.getElementById(`sliderColorG${index + 1}Value`).textContent = selectedColors[index].g;
+        document.getElementById(`sliderColorB${index + 1}Value`).textContent = selectedColors[index].b;
+        document.getElementById(`sliderBackgroundR${index + 1}Value`).textContent = selectedBackgrounds[index].r;
+        document.getElementById(`sliderBackgroundG${index + 1}Value`).textContent = selectedBackgrounds[index].g;
+        document.getElementById(`sliderBackgroundB${index + 1}Value`).textContent = selectedBackgrounds[index].b;
+    }
+
     function updateColorFromSliders(index) {
         const color = selectedColors[index];
-        console.log(color);
         document.getElementById(`boxColor${index + 1}`).style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
         document.getElementById(`boxColorFiltered${index + 1}`).style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+        setSliderValue(index);
     }
 
     function updateBackgroundFromSliders(index) {
         const background = selectedBackgrounds[index];
         document.getElementById(`boxBackground${index + 1}`).style.backgroundColor = `rgb(${background.r}, ${background.g}, ${background.b})`;
         document.getElementById(`boxBackgroundFiltered${index + 1}`).style.backgroundColor = `rgb(${background.r}, ${background.g}, ${background.b})`;
+        setSliderValue(index);
     }
 
     ["R", "G", "B"].forEach((channel) => {
