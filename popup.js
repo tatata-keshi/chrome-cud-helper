@@ -85,17 +85,22 @@ function showOverlayInContentScript() {
                 <div class="cvd-color-slider">
                     <p>R: </p>
                     <input type="range" min="0" max="255" id="sliderColorR1">
-                    <p id="sliderColorR1Value"></p>
                 </div>
                 <div class="cvd-color-slider">
                     <p>G: </p>
                     <input type="range" min="0" max="255" id="sliderColorG1">
-                    <p id="sliderColorG1Value"></p>
                 </div>
                 <div class="cvd-color-slider">
                     <p>B: </p>
                     <input type="range" min="0" max="255" id="sliderColorB1">
-                    <p id="sliderColorB1Value"></p>
+                </div>
+            </div>
+            <div class="cvd-color-css-container">
+                <div class="cvd-color-css">
+                    <code id="hexColor1"></code>
+                </div>
+                <div class="cvd-color-css">
+                    <code id="rgbColor1"></code>
                 </div>
             </div>
         </div>
@@ -106,17 +111,22 @@ function showOverlayInContentScript() {
                 <div class="cvd-color-slider">
                     <p>R: </p>
                     <input type="range" min="0" max="255" id="sliderBackgroundR1">
-                    <p id="sliderBackgroundR1Value"></p>
                 </div>
                 <div class="cvd-color-slider">
                     <p>G: </p>
                     <input type="range" min="0" max="255" id="sliderBackgroundG1">
-                    <p id="sliderBackgroundG1Value"></p>
                 </div>
                 <div class="cvd-color-slider">
                     <p>B: </p>
                     <input type="range" min="0" max="255" id="sliderBackgroundB1">
-                    <p id="sliderBackgroundB1Value"></p>
+                </div>
+            </div>
+            <div class="cvd-color-css-container">
+                <div class="cvd-color-css">
+                    <code id="hexBackground1"></code>
+                </div>
+                <div class="cvd-color-css">
+                    <code id="rgbBackground1"></code>
                 </div>
             </div>
         </div>
@@ -128,17 +138,22 @@ function showOverlayInContentScript() {
                 <div class="cvd-color-slider">
                     <p>R: </p>
                     <input type="range" min="0" max="255" id="sliderColorR2">
-                    <p id="sliderColorR2Value"></p>
                 </div>
                 <div class="cvd-color-slider">
                     <p>G: </p>
                     <input type="range" min="0" max="255" id="sliderColorG2">
-                    <p id="sliderColorG2Value"></p>
                 </div>
                 <div class="cvd-color-slider">
                     <p>B: </p>
                     <input type="range" min="0" max="255" id="sliderColorB2">
-                    <p id="sliderColorB2Value"></p>
+                </div>
+            </div>
+            <div class="cvd-color-css-container">
+                <div class="cvd-color-css">
+                    <code id="hexColor2"></code>
+                </div>
+                <div class="cvd-color-css">
+                    <code id="rgbColor2"></code>
                 </div>
             </div>
         </div>
@@ -149,17 +164,22 @@ function showOverlayInContentScript() {
                 <div class="cvd-color-slider">
                     <p>R: </p>
                     <input type="range" min="0" max="255" id="sliderBackgroundR2">
-                    <p id="sliderBackgroundR2Value"></p>
                 </div>
                 <div class="cvd-color-slider">
                     <p>G: </p>
                     <input type="range" min="0" max="255" id="sliderBackgroundG2">
-                    <p id="sliderBackgroundG2Value"></p>
                 </div>
                 <div class="cvd-color-slider">
                     <p>B: </p>
                     <input type="range" min="0" max="255" id="sliderBackgroundB2">
-                    <p id="sliderBackgroundB2Value"></p>
+                </div>
+            </div>
+            <div class="cvd-color-css-container">
+                <div class="cvd-color-css">
+                    <code id="hexBackground2"></code>
+                </div>
+                <div class="cvd-color-css">
+                    <code id="rgbBackground2"></code>
                 </div>
             </div>
         </div>
@@ -188,7 +208,7 @@ function showOverlayInContentScript() {
     style.textContent = `
     #cvdCustomOverlay {
         position: fixed;
-        width: 320px;
+        width: 400px;
         background-color: white;
         color: black;
         display: flex;
@@ -239,14 +259,14 @@ function showOverlayInContentScript() {
     }
     .cvd-color-display {
         display: flex;
-        gap: 8px;
+        gap: 12px;
         width: 100%;
         align-items: center;
         margin-bottom: 8px;
     }
     .cvd-color-box {
-        width: 48px;
-        height: 48px;
+        width: 36px;
+        height: 36px;
         background-color: gray;
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -257,12 +277,26 @@ function showOverlayInContentScript() {
         gap: 4px;
     }
     .cvd-color-controls input {
-      width: 80px;
+        width: 80px;
     }
     .cvd-color-slider {
         display: flex;
         align-items: center;
         gap: 8px;
+    }
+    .cvd-color-slider p {
+        font-size: 14px;
+    }
+    .cvd-color-css-container {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        gap: 4px;
+    }
+    .cvd-color-css {
+        display: flex;
+        font-size: 14px;
     }
     .cvd-toggle-color-pick-mode-button-container {
         margin-top: 16px;
@@ -320,25 +354,37 @@ function showOverlayInContentScript() {
     setSliderValue(1);
 
     function setSliderValue(index) {
-        document.getElementById(`sliderColorR${index + 1}Value`).textContent = selectedColors[index].r;
-        document.getElementById(`sliderColorG${index + 1}Value`).textContent = selectedColors[index].g;
-        document.getElementById(`sliderColorB${index + 1}Value`).textContent = selectedColors[index].b;
-        document.getElementById(`sliderBackgroundR${index + 1}Value`).textContent = selectedBackgrounds[index].r;
-        document.getElementById(`sliderBackgroundG${index + 1}Value`).textContent = selectedBackgrounds[index].g;
-        document.getElementById(`sliderBackgroundB${index + 1}Value`).textContent = selectedBackgrounds[index].b;
+        const color = getRGBColor(selectedColors[index]);
+        const background = getRGBColor(selectedBackgrounds[index]);
+        document.getElementById(`hexColor${index + 1}`).textContent = rgbToHex(selectedColors[index]);
+        document.getElementById(`rgbColor${index + 1}`).textContent = color;
+        document.getElementById(`hexBackground${index + 1}`).textContent = rgbToHex(selectedBackgrounds[index]);
+        document.getElementById(`rgbBackground${index + 1}`).textContent = background;
+    }
+
+    function rgbToHex(color) {
+        const r = `00${color.r.toString(16)}`.slice(-2);
+        const g = `00${color.g.toString(16)}`.slice(-2);
+        const b = `00${color.b.toString(16)}`.slice(-2);
+
+        return `#${r}${g}${b}`;
+    }
+
+    function getRGBColor(color) {
+        return `rgb(${color.r}, ${color.g}, ${color.b})`;
     }
 
     function updateColorFromSliders(index) {
-        const color = selectedColors[index];
-        document.getElementById(`boxColor${index + 1}`).style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
-        document.getElementById(`boxColorFiltered${index + 1}`).style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+        const color = getRGBColor(selectedColors[index]);
+        document.getElementById(`boxColor${index + 1}`).style.backgroundColor = color;
+        document.getElementById(`boxColorFiltered${index + 1}`).style.backgroundColor = color;
         setSliderValue(index);
     }
 
     function updateBackgroundFromSliders(index) {
-        const background = selectedBackgrounds[index];
-        document.getElementById(`boxBackground${index + 1}`).style.backgroundColor = `rgb(${background.r}, ${background.g}, ${background.b})`;
-        document.getElementById(`boxBackgroundFiltered${index + 1}`).style.backgroundColor = `rgb(${background.r}, ${background.g}, ${background.b})`;
+        const background = getRGBColor(selectedBackgrounds[index]);
+        document.getElementById(`boxBackground${index + 1}`).style.backgroundColor = background;
+        document.getElementById(`boxBackgroundFiltered${index + 1}`).style.backgroundColor = background;
         setSliderValue(index);
     }
 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Chrome CUD Helper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "開発者向けCUDチェックツール。",
   "permissions": ["activeTab", "scripting", "storage"],
   "action": {
