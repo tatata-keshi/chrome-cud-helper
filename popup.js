@@ -79,8 +79,10 @@ function showOverlayInContentScript() {
     <div class="cvd-color-display-container">
         <h2>Color1</h2>
         <div class="cvd-color-display">
-            <div id="boxColor1" class="cvd-color-box"></div>
-            <div id="boxColorFiltered1" class="cvd-color-box cvd-color-box-filtered"></div>
+            <div class="cvd-color-box-container">
+                <div id="boxColor1" class="cvd-color-box"></div>
+                <div id="boxColorFiltered1" class="cvd-color-box cvd-color-box-filtered"></div>
+            </div>
             <div class="cvd-color-controls">
                 <div class="cvd-color-slider">
                     <p>R: </p>
@@ -105,8 +107,10 @@ function showOverlayInContentScript() {
             </div>
         </div>
         <div class="cvd-color-display">
-            <div id="boxBackground1" class="cvd-color-box"></div>
-            <div id="boxBackgroundFiltered1" class="cvd-color-box cvd-color-box-filtered"></div>
+            <div class="cvd-color-box-container">
+                <div id="boxBackground1" class="cvd-color-box"></div>
+                <div id="boxBackgroundFiltered1" class="cvd-color-box cvd-color-box-filtered"></div>
+            </div>
             <div class="cvd-color-controls">
                 <div class="cvd-color-slider">
                     <p>R: </p>
@@ -132,8 +136,10 @@ function showOverlayInContentScript() {
         </div>
         <h2>Color2</h2>
         <div class="cvd-color-display">
-            <div id="boxColor2" class="cvd-color-box"></div>
-            <div id="boxColorFiltered2" class="cvd-color-box cvd-color-box-filtered"></div>
+            <div class="cvd-color-box-container">
+                <div id="boxColor2" class="cvd-color-box"></div>
+                <div id="boxColorFiltered2" class="cvd-color-box cvd-color-box-filtered"></div>
+            </div>
             <div class="cvd-color-controls">
                 <div class="cvd-color-slider">
                     <p>R: </p>
@@ -158,8 +164,10 @@ function showOverlayInContentScript() {
             </div>
         </div>
         <div class="cvd-color-display">
-            <div id="boxBackground2" class="cvd-color-box"></div>
-            <div id="boxBackgroundFiltered2" class="cvd-color-box cvd-color-box-filtered"></div>
+            <div class="cvd-color-box-container">
+                <div id="boxBackground2" class="cvd-color-box"></div>
+                <div id="boxBackgroundFiltered2" class="cvd-color-box cvd-color-box-filtered"></div>
+            </div>
             <div class="cvd-color-controls">
                 <div class="cvd-color-slider">
                     <p>R: </p>
@@ -250,6 +258,8 @@ function showOverlayInContentScript() {
         color: white;
         padding: 4px 8px;
         cursor: pointer;
+        font-size: 14px;
+        font-weight: normal;
     }
     .cvd-color-display-container {
         display: flex;
@@ -263,6 +273,11 @@ function showOverlayInContentScript() {
         width: 100%;
         align-items: center;
         margin-bottom: 8px;
+    }
+    .cvd-color-box-container {
+        display: flex;
+        gap: 8px;
+        align-items: center;
     }
     .cvd-color-box {
         width: 36px;
@@ -312,6 +327,8 @@ function showOverlayInContentScript() {
         color: white;
         padding: 4px 8px;
         cursor: pointer;
+        font-size: 14px;
+        font-weight: normal;
     }
     .cvd-toggle-color-pick-mode-button:hover {
         background-color: darkblue;
