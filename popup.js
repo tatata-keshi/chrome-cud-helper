@@ -214,7 +214,10 @@ function showOverlayInContentScript() {
 
     const style = document.createElement("style");
     style.textContent = `
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
+    
     #cvdCustomOverlay {
+        font-family: "Noto Sans JP", serif !important;
         position: fixed;
         width: 400px;
         background-color: white;
@@ -222,7 +225,7 @@ function showOverlayInContentScript() {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 12px 16px;
+        padding: 12px;
         z-index: 10000;
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -244,15 +247,17 @@ function showOverlayInContentScript() {
     #cvdCustomOverlay h2 {
         font-size: 16px;
         font-weight: bold;
+        margin: 0;
+        padding: 0;
     }
     .cvd-exit-overlay-button-container {
         width: 100%;
         display: flex;
         justify-content: flex-end;
-        margin-top: 16px;
+        margin-top: 8px;
     }
     .cvd-exit-overlay-button {
-        background-color: red;
+        background-color: #ef4444;
         border: none;
         border-radius: 4px;
         color: white;
@@ -291,16 +296,36 @@ function showOverlayInContentScript() {
         flex-direction: column;
         gap: 4px;
     }
-    .cvd-color-controls input {
-        width: 80px;
-    }
     .cvd-color-slider {
         display: flex;
         align-items: center;
         gap: 8px;
     }
+    .cvd-color-slider input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+      background: transparent;
+      cursor: pointer;
+      width: 100px;
+    }
+    .cvd-color-slider input[type="range"]::-webkit-slider-runnable-track {
+      background: #ccc;
+      height: 6px;
+      border-radius: 8px;
+    }
+    .cvd-color-slider input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 16px;
+      width: 16px;
+      margin-top: -5px;
+      background-color: #0ea5e9;
+      border-radius: 50%;
+    }
     .cvd-color-slider p {
         font-size: 14px;
+        margin: 0;
     }
     .cvd-color-css-container {
         display: flex;
@@ -311,17 +336,24 @@ function showOverlayInContentScript() {
     }
     .cvd-color-css {
         display: flex;
-        font-size: 14px;
+    }
+    .cvd-color-css code {
+        font-family: monospace !important;
+        font-size: 14px !important;
+        color: #b91c1c !important;
+        background-color: #fef2f2 !important;
+        padding: 2px 4px !important;
+        margin: 0 !important;
     }
     .cvd-toggle-color-pick-mode-button-container {
-        margin-top: 16px;
-        margin-bottom: 16px;
+        margin-top: 8px;
+        margin-bottom: 8px;
         width: 100%;
         display: flex;
         justify-content: center;
     }
     .cvd-toggle-color-pick-mode-button {
-        background-color: blue;
+        background-color: #0ea5e9;
         border: none;
         border-radius: 4px;
         color: white;
@@ -331,13 +363,13 @@ function showOverlayInContentScript() {
         font-weight: normal;
     }
     .cvd-toggle-color-pick-mode-button:hover {
-        background-color: darkblue;
+        background-color: #0284c7;
     }
     .cvd-toggle-color-pick-mode-button:focus {
-        background-color: lightblue;
+        background-color: #0284c7;
     }
     .cvd-toggle-color-pick-mode-button:active {
-        background-color: lightblue;
+        background-color: #0369a1;
     }
   `;
     document.head.appendChild(style);
